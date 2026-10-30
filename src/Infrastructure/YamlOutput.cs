@@ -31,7 +31,7 @@ public static class YamlOutput
         System.Console.WriteLine(Serializer.Serialize(obj!).TrimEnd());
     }
 
-    private static object? JsonToObject(JsonElement element) => element.ValueKind switch
+    public static object? JsonToObject(JsonElement element) => element.ValueKind switch
     {
         JsonValueKind.Object => element.EnumerateObject()
             .ToDictionary(p => p.Name, p => JsonToObject(p.Value)),

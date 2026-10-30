@@ -11,9 +11,9 @@
 
     <!-- NuGet metadata -->
     <PackageId>Linkedin.Console</PackageId>
-    <Version>1.1.0</Version>
+    <Version>1.2.0</Version>
     <Authors>nielsbosma</Authors>
-    <Description>CLI for fetching LinkedIn profiles via Apify — YAML-first output optimized for LLM agent consumption.</Description>
+    <Description>CLI for your own LinkedIn data through LinkedIn's Member Data Portability API, and for public profiles and posts via Apify. YAML-first output optimized for LLM agent consumption.</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryUrl>https://github.com/nielsbosma/Linkedin.Console</RepositoryUrl>
     <PackageTags>cli;dotnet-tool;linkedin</PackageTags>
@@ -26,6 +26,7 @@
 
   <ItemGroup>
     <PackageReference Include="Spectre.Console.Cli" Version="1.0.0-alpha.0.16" />
+    <PackageReference Include="System.Security.Cryptography.ProtectedData" Version="10.0.14" />
     <PackageReference Include="YamlDotNet" Version="16.3.0" />
   </ItemGroup>
 </Project>

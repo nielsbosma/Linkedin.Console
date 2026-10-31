@@ -14,6 +14,21 @@ public static partial class LinkedInUrl
         return $"https://www.linkedin.com/in/{match.Groups[1].Value}";
     }
 
+    /// <summary>
+    /// A link built here rather than taken from the input, as it gets opened in a browser, and the
+    /// handle in lower case for comparing. Obfuscated <c>ACoAA…</c> handles need their case in the link.
+    /// </summary>
+    public static (string Url, string Key) CanonicalProfile(string url)
+    {
+        var match = ProfileRegex().Match(url.Trim());
+        var handle = match.Success ? Uri.UnescapeDataString(match.Groups[1].Value.Split('#')[0]) : "";
+
+        if (string.IsNullOrWhiteSpace(handle))
+            throw new ArgumentException($"Invalid LinkedIn profile URL: {url}");
+
+        return ($"https://www.linkedin.com/in/{Uri.EscapeDataString(handle)}", handle.ToLowerInvariant());
+    }
+
     public static string NormalizePost(string url)
     {
         var trimmed = url.Trim();

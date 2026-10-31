@@ -46,6 +46,26 @@ app.Configure(config =>
         me.AddCommand<MeSyncCommand>("sync")
             .WithDescription("Append new activity to a file, so history outlasts the 28 days");
     });
+
+    config.AddBranch("outreach", outreach =>
+    {
+        outreach.SetDescription("Work through a list of people: the tool prepares each invitation, you press Send on LinkedIn");
+
+        outreach.AddCommand<OutreachAddCommand>("add")
+            .WithDescription("Add people from a CSV file");
+
+        outreach.AddCommand<OutreachNextCommand>("next")
+            .WithDescription("Copy the next note, open the profile, and record what you did");
+
+        outreach.AddCommand<OutreachListCommand>("list")
+            .WithDescription("Show the list and how much of the caps is used");
+
+        outreach.AddCommand<OutreachNeverCommand>("never")
+            .WithDescription("Mark a person as do-not-contact, for good");
+
+        outreach.AddCommand<OutreachPauseCommand>("pause")
+            .WithDescription("Stop outreach next until a date");
+    });
 });
 
 return app.Run(args);

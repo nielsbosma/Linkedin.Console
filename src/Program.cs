@@ -40,6 +40,9 @@ app.Configure(config =>
         me.AddCommand<MeSnapshotCommand>("snapshot")
             .WithDescription("Fetch domains to stdout, or everything to a folder");
 
+        me.AddCommand<MeSqliteCommand>("sqlite")
+            .WithDescription("Build a SQLite database from an export folder");
+
         me.AddCommand<MeChangelogCommand>("changelog")
             .WithDescription("Read recent activity, up to 28 days back");
 

@@ -48,6 +48,9 @@ linkedin me snapshot --domain POSITIONS,EDUCATION --format json
 # Everything, to a folder: one JSON file per domain plus manifest.yaml
 linkedin me snapshot --out-dir ./linkedin-export
 
+# Turn that export into a SQLite database (no API calls, no token needed)
+linkedin me sqlite --from ./linkedin-export --out ./linkedin.db
+
 # Recent activity, oldest first (LinkedIn keeps 28 days)
 linkedin me changelog --since 2026-10-01
 
@@ -64,12 +67,30 @@ linkedin me sync --dir ./linkedin-changes
 | `linkedin me domains [--available]` | Without `--available` it makes no API calls |
 | `linkedin me snapshot --domain X[,Y] [--limit N]` | Domain names can be in any case |
 | `linkedin me snapshot --out-dir DIR [--domain X] [--force]` | A rerun skips finished domains unless `--force` is set |
+| `linkedin me sqlite --from DIR --out FILE [--changes DIR] [--force]` | One table per domain. `--changes` adds a `me sync` folder as a `changelog` table. `--force` replaces the file |
 | `linkedin me changelog [--since DATE] [--limit N] [--count N]` | `--limit` defaults to 100. A cut-off result gives `nextSince` to continue from |
 | `linkedin me sync --dir DIR [--count N]` | Meant to run on a schedule. LinkedIn suggests about once an hour |
 
 The token is looked up in this order: `--access-token`, then `LINKEDIN_ACCESS_TOKEN`, then the secret store (DPAPI on Windows, Keychain on macOS, libsecret on Linux). If Linux has no keyring, set `LINKEDIN_ALLOW_PLAINTEXT_STORE=1` to store it in an unencrypted file readable only by you.
 
 All commands take `--format yaml|json`. Data goes to stdout, and status and errors go to stderr. Exit codes are `0` ok, `1` error, `2` network, `3` token missing or rejected, `4` not found, `5` daily limit reached, `6` invalid input.
+
+### The SQLite database
+
+Each domain gets a table named after it, with columns named as LinkedIn names them, so they need quotes in SQL:
+
+```sql
+SELECT Company, COUNT(*) AS people
+FROM CONNECTIONS
+GROUP BY Company
+ORDER BY people DESC;
+```
+
+- `_domains` lists the tables with their row counts and when each was fetched.
+- `_meta` says when the database was built, whether the export finished, and which domains LinkedIn didn't return.
+- `changelog` holds the activity events from `--changes`, and each event's original JSON is in its `raw` column.
+- Every value is text, as LinkedIn sent it, so dates need converting before you sort by them.
+- The file isn't encrypted, and it holds everything in the export.
 
 ### Limits
 

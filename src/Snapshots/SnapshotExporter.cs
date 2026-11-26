@@ -160,16 +160,15 @@ public sealed class SnapshotExporter(LinkedInApiClient client, string dir, bool 
         return doc.RootElement.GetProperty("rows").EnumerateArray().Select(YamlOutput.JsonToObject).ToList();
     }
 
-    private SnapshotManifest LoadManifest()
-    {
-        if (!File.Exists(ManifestPath)) return new SnapshotManifest();
+    private SnapshotManifest LoadManifest() =>
+        File.Exists(ManifestPath) ? ReadManifest(ManifestPath) : new SnapshotManifest();
 
-        return new DeserializerBuilder()
+    public static SnapshotManifest ReadManifest(string path) =>
+        new DeserializerBuilder()
             .WithNamingConvention(CamelCaseNamingConvention.Instance)
             .IgnoreUnmatchedProperties()
             .Build()
-            .Deserialize<SnapshotManifest>(File.ReadAllText(ManifestPath)) ?? new SnapshotManifest();
-    }
+            .Deserialize<SnapshotManifest>(File.ReadAllText(path)) ?? new SnapshotManifest();
 
     private void SaveManifest(SnapshotManifest manifest)
     {

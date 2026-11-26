@@ -65,7 +65,7 @@ public class SqliteBuilderTests
         Assert.Equal("b", Scalar(db, "SELECT Name FROM ARTICLES"));
         Assert.Equal("c", Scalar(db, "SELECT name_2 FROM ARTICLES"));
         Assert.Equal("d", Scalar(db, "SELECT _row_2 FROM ARTICLES"));
-        Assert.Equal("e", Scalar(db, """SELECT "say ""hi""" FROM ARTICLES"""));
+        Assert.Equal("e", Scalar(db, "SELECT \"say \"\"hi\"\"\" FROM ARTICLES"));
     }
 
     [Fact]
